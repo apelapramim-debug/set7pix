@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 SETPIX7</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #000000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        /* BOTÃO DONO - SUPER VISÍVEL (SÓ PARA VOCÊ) */
+        .login-dono {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff0000, #990000);
+            border: 3px solid #ffffff;
+            color: white;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10000;
+            display: none;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.5);
+            text-transform: uppercase;
+            border: 2px solid #ffaa00;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 0, 0, 0.8); }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255, 0, 0, 1), 0 0 80px rgba(255, 215, 0, 0.5); }
+            100% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 0, 0, 0.8); }
+        }
+
+        .login-dono.visible {
+            display: block;
+        }
+
+        .login-dono:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #ff4400, #cc0000);
+            box-shadow: 0 0 50px rgba(255, 0, 0, 1);
+        }
+
+        /* Área invisível para clique (mesmo sem botão) */
+        .area-clique-dono {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 80px;
+            z-index: 9999;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .planos-screen {
+            background: #111111;
+            border: 2px solid #ff0000;
+            border-radius: 40px;
+            padding: 50px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #cccccc;
+            margin-bottom: 40px;
+        }
+
+        .planos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .plano-card {
+            background: #1a1a1a;
+            border: 1px solid #ff0000;
+            border-radius: 30px;
+            padding: 35px 25px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .plano-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.3);
+            border: 2px solid #ff0000;
+        }
+
+        .plano-card.popular {
+            border: 3px solid #ff0000;
+            background: #220000;
+        }
+
+        .popular-badge {
+            background: #ff0000;
+            color: #000000;
+            padding: 5px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .plano-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ff0000;
+        }
+
+        .plano-nome {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff0000;
+            margin-bottom: 15px;
+        }
+
+        .preco {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ff0000;
+            margin-bottom: 20px;
+        }
+
+        .preco small {
+            font-size: 1rem;
+            color: #999999;
+        }
+
+        .features {
+            list-style: none;
+            margin: 25px 0;
+        }
+
+        .features li {
+            padding: 10px 0;
+            color: #cccccc;
+            border-bottom: 1px solid #333333;
+        }
+
+        .btn-comprar {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-comprar:hover {
+            background: #ff0000;
+            color: #000000;
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .login-screen {
+            background: #111111;
+            border: 2px solid #ff0000;
+            border-radius: 40px;
+            padding: 50px;
+            max-width: 450px;
+            margin: 0 auto;
+            display: none;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+        }
+
+        .login-screen.active {
+            display: block;
+        }
+
+        .login-title {
+            color: #ff0000;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 2px solid #333333;
+            border-radius: 15px;
+            color: #ff0000;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            border-color: #ff0000;
+            outline: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: #ff0000;
+            border: none;
+            border-radius: 15px;
+            color: #000000;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .btn-login:hover {
+            background: #cc0000;
+        }
+
+        .btn-voltar {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid #ff0000;
+            border-radius: 15px;
+            color: #ff0000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-voltar:hover {
+            background: #ff0000;
+            color: #000000;
+        }
+
+        .admin-screen {
+            background: #111111;
+            border: 2px solid #ff0000;
+            border-radius: 40px;
+            padding: 50px;
+            display: none;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+        }
+
+        .admin-screen.active {
+            display: block;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .admin-header h2 {
+            color: #ff0000;
+            font-size: 2rem;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #1a1a1a;
+            border: 1px solid #ff0000;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff0000;
+        }
+
+        .stat-label {
+            color: #cccccc;
+            margin-top: 10px;
+        }
+
+        .usuarios-lista {
+            background: #1a1a1a;
+            border: 1px solid #ff0000;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .usuarios-lista h3 {
+            color: #ff0000;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            color: #ff0000;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #ff0000;
+        }
+
+        td {
+            padding: 15px;
+            color: #cccccc;
+            border-bottom: 1px solid #333333;
+        }
+
+        .pago-badge {
+            background: #00aa00;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .expirado-badge {
+            background: #ff0000;
+            color: black;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .pagamento-screen {
+            background: #111111;
+            border: 2px solid #ff0000;
+            border-radius: 40px;
+            padding: 50px;
+            max-width: 500px;
+            margin: 0 auto;
+            display: none;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+        }
+
+        .pagamento-screen.active {
+            display: block;
+        }
+
+        .voltar-btn {
+            background: none;
+            border: none;
+            color: #ff0000;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .resumo-pedido {
+            background: #1a1a1a;
+            border: 1px solid #ff0000;
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .resumo-plano {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff0000;
+        }
+
+        .resumo-preco {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ff0000;
+            margin: 10px 0;
+        }
+
+        .pix-info {
+            text-align: center;
+            background: #1a1a1a;
+            border: 2px dashed #ff0000;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+
+        .chave-pix {
+            background: #000000;
+            border: 2px solid #ff0000;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff0000;
+            margin: 20px 0;
+            word-break: break-all;
+        }
+
+        .qrcode-box {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 20px 0;
+        }
+
+        .btn-copiar {
+            background: #ff0000;
+            color: #000000;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .painel-screen {
+            background: #111111;
+            border: 2px solid #ff0000;
+            border-radius: 40px;
+            padding: 50px;
+            display: none;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+        }
+
+        .painel-screen.active {
+            display: block;
+        }
+
+        .painel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .boas-vindas h2 {
+            color: #ff0000;
+            margin-bottom: 5px;
+        }
+
+        .badge-plano {
+            background: #ff0000;
+            color: #000000;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+
+        .info-expiracao {
+            background: #1a1a1a;
+            border: 1px solid #ff0000;
+            padding: 10px 25px;
+            border-radius: 30px;
+            color: #ff0000;
+        }
+
+        .msg-aviso {
+            background: #220000;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .gerador-pix {
+            background: #1a1a1a;
+            border: 1px solid #ff0000;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .gerador-pix h3 {
+            color: #ff0000;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #cccccc;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background: #000000;
+            border: 2px solid #333333;
+            border-radius: 10px;
+            color: #ff0000;
+        }
+
+        .input-group input:focus {
+            border-color: #ff0000;
+            outline: none;
+        }
+
+        .btn-gerar {
+            background: #ff0000;
+            color: #000000;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .resultado-pix {
+            background: #000000;
+            border: 1px solid #ff0000;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            color: #cccccc;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff0000;
+            color: #000000;
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: none;
+            z-index: 10000;
+            font-weight: bold;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- ÁREA DE CLIQUE INVISÍVEL (para você acessar o login) -->
+    <div class="area-clique-dono" onclick="mostrarLoginDono()"></div>
+    
+    <!-- BOTÃO DONO - SUPER VISÍVEL (SÓ APARECE DEPOIS DO LOGIN) -->
+    <button class="login-dono" id="btnDono" onclick="mostrarLoginDono()">
+        👑 DONO MASTER 👑
+    </button>
+    
+    <div class="container">
+        <!-- TELA DE PLANOS -->
+        <div id="planosScreen" class="planos-screen">
+            <h1>🔥 SETPIX7</h1>
+            <div class="subtitle">Escolha seu plano de acesso</div>
+            
+            <div class="planos-grid">
+                <div class="plano-card">
+                    <div class="plano-icon">⚡</div>
+                    <div class="plano-nome">SEMANAL</div>
+                    <div class="preco">R$ 150 <small>/semana</small></div>
+                    <ul class="features">
+                        <li>✓ 7 dias de acesso</li>
+                        <li>✓ Gerador PIX</li>
+                        <li>✓ QR Code automático</li>
+                        <li>✓ Envio WhatsApp</li>
+                    </ul>
+                    <button class="btn-comprar" onclick="selecionarPlano('Semanal', 150, 7)">COMPRAR</button>
+                </div>
+                
+                <div class="plano-card popular">
+                    <div class="popular-badge">🔥 MAIS VENDIDO</div>
+                    <div class="plano-icon">💎</div>
+                    <div class="plano-nome">MENSAL</div>
+                    <div class="preco">R$ 450 <small>/mês</small></div>
+                    <ul class="features">
+                        <li>✓ 30 dias de acesso</li>
+                        <li>✓ Gerador PIX</li>
+                        <li>✓ QR Code automático</li>
+                        <li>✓ Envio WhatsApp</li>
+                        <li>✓ Suporte prioritário</li>
+                    </ul>
+                    <button class="btn-comprar" onclick="selecionarPlano('Mensal', 450, 30)">COMPRAR</button>
+                </div>
+                
+                <div class="plano-card">
+                    <div class="plano-icon">👑</div>
+                    <div class="plano-nome">ANUAL</div>
+                    <div class="preco">R$ 1.500 <small>/ano</small></div>
+                    <ul class="features">
+                        <li>✓ 365 dias de acesso</li>
+                        <li>✓ Gerador PIX</li>
+                        <li>✓ QR Code automático</li>
+                        <li>✓ Envio WhatsApp</li>
+                        <li>✓ Suporte VIP</li>
+                        <li>✓ 2 meses grátis</li>
+                    </ul>
+                    <button class="btn-comprar" onclick="selecionarPlano('Anual', 1500, 365)">COMPRAR</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TELA DE LOGIN DO DONO -->
+        <div id="loginScreen" class="login-screen">
+            <div class="login-title">👑 ACESSO DONO</div>
+            
+            <div class="form-group">
+                <input type="text" id="loginUser" placeholder="Usuário" value="rhyanxzk9">
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="loginSenha" placeholder="Senha" value="Denner9@">
+            </div>
+            
+            <button class="btn-login" onclick="fazerLoginDono()">ENTRAR</button>
+            <button class="btn-voltar" onclick="voltarParaPlanos()">VOLTAR</button>
+        </div>
+        
+        <!-- PAINEL ADMIN (DONO) -->
+        <div id="adminScreen" class="admin-screen">
+            <div class="admin-header">
+                <h2>👑 Painel do Dono - SETPIX7</h2>
+                <button class="btn-voltar" style="width:auto; padding:10px 30px;" onclick="sairAdmin()">SAIR</button>
+            </div>
+            
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalUsuarios">0</div>
+                    <div class="stat-label">Total de usuários</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="usuariosHoje">0</div>
+                    <div class="stat-label">Pagamentos hoje</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="receitaHoje">R$ 0</div>
+                    <div class="stat-label">Receita hoje</div>
+                </div>
+            </div>
+            
+            <div class="usuarios-lista">
+                <h3>📋 Usuários que pagaram</h3>
+                <table id="tabelaUsuarios">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Plano</th>
+                            <th>Pagamento</th>
+                            <th>Expira em</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaUsuariosBody"></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- TELA DE PAGAMENTO -->
+        <div id="pagamentoScreen" class="pagamento-screen">
+            <button class="voltar-btn" onclick="voltarParaPlanos()">← VOLTAR</button>
+            
+            <h2 style="text-align:center; color:#ff0000;">💰 PAGAMENTO SETPIX7</h2>
+            
+            <div class="resumo-pedido">
+                <div class="resumo-plano" id="planoEscolhido">Plano Mensal</div>
+                <div class="resumo-preco" id="valorEscolhido">R$ 450</div>
+            </div>
+            
+            <div class="pix-info">
+                <h3 style="margin-bottom:20px; color:#ff0000;">PIX DO PAINEL</h3>
+                
+                <div class="qrcode-box">
+                    <img id="qrCodeImg" src="" style="width:200px; height:200px;">
+                </div>
+                
+                <div style="font-weight:bold; margin:10px 0; color:#ff0000;">Chave PIX:</div>
+                <div class="chave-pix" id="chavePixDono">12359317903</div>
+                
+                <button class="btn-copiar" onclick="copiarChavePix()">
+                    📋 COPIAR CHAVE
+                </button>
+                
+                <div style="color:#cccccc; margin-top:20px;">
+                    1. Copie a chave acima<br>
+                    2. Pague no seu banco<br>
+                    3. Após pagar, clique em "JÁ PAGUEI"
+                </div>
+            </div>
+            
+            <button class="btn-comprar" style="background:#ff0000; color:#000000; border:none;" onclick="verificarPagamentoAntesCadastro()">
+                ✅ JÁ PAGUEI • VERIFICAR
+            </button>
+        </div>
+        
+        <!-- TELA DE CADASTRO -->
+        <div id="cadastroScreen" class="pagamento-screen" style="display:none;">
+            <button class="voltar-btn" onclick="voltarParaPagamento()">← VOLTAR</button>
+            
+            <h2 style="text-align:center; color:#ff0000;">📝 CRIAR CONTA SETPIX7</h2>
+            
+            <div class="form-group">
+                <input type="text" id="cadNome" placeholder="Seu nome completo">
+            </div>
+            
+            <div class="form-group">
+                <input type="email" id="cadEmail" placeholder="Seu e-mail">
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="cadSenha" placeholder="Sua senha">
+            </div>
+            
+            <button class="btn-login" onclick="finalizarCadastro()">CRIAR ACESSO</button>
+        </div>
+        
+        <!-- PAINEL DO USUÁRIO -->
+        <div id="painelScreen" class="painel-screen">
+            <div class="painel-header">
+                <div class="boas-vindas">
+                    <h2>👋 Olá, <span id="nomeUsuario">Usuário</span></h2>
+                    <p>Bem-vindo ao SETPIX7</p>
+                </div>
+                <div class="badge-plano" id="planoUsuario">Plano Mensal</div>
+                <div class="info-expiracao" id="diasRestantes">30 dias</div>
+            </div>
+            
+            <div class="msg-aviso">
+                ⚠️ PIX para pagar o painel: <strong>12359317903</strong>
+            </div>
+            
+            <div class="gerador-pix">
+                <h3>⚡ GERADOR DE PIX</h3>
+                
+                <div class="input-group">
+                    <label>Chave PIX do recebedor</label>
+                    <input type="text" id="chaveCliente" placeholder="CPF, e-mail ou telefone">
+                </div>
+                
+                <div class="input-group">
+                    <label>Valor (R$)</label>
+                    <input type="number" id="valorPix" step="0.01" placeholder="0,00">
+                </div>
+                
+                <button class="btn-gerar" onclick="gerarPixCliente()">GERAR PIX</button>
+                
+                <div id="resultadoPix" class="resultado-pix"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        // ==================== DADOS DO DONO ====================
+        const DONO = {
+            usuario: 'rhyanxzk9',
+            senha: 'Denner9@',
+            pix: '12359317903'
+        };
+        
+        // ==================== CONTROLE DE VISIBILIDADE ====================
+        const btnDono = document.getElementById('btnDono');
+        
+        function atualizarVisibilidadeBotaoDono() {
+            if (localStorage.getItem('usuario_logado') === 'dono') {
+                btnDono.classList.add('visible');
+            } else {
+                btnDono.classList.remove('visible');
+            }
+        }
+        
+        function mostrarTela(tela) {
+            document.getElementById('planosScreen').style.display = 'none';
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('adminScreen').classList.remove('active');
+            document.getElementById('pagamentoScreen').classList.remove('active');
+            document.getElementById('cadastroScreen').style.display = 'none';
+            document.getElementById('painelScreen').classList.remove('active');
+            
+            if (tela === 'planos') {
+                document.getElementById('planosScreen').style.display = 'block';
+            } else if (tela === 'login') {
+                document.getElementById('loginScreen').classList.add('active');
+            } else if (tela === 'admin') {
+                document.getElementById('adminScreen').classList.add('active');
+            } else if (tela === 'pagamento') {
+                document.getElementById('pagamentoScreen').classList.add('active');
+            } else if (tela === 'cadastro') {
+                document.getElementById('cadastroScreen').style.display = 'block';
+            } else if (tela === 'painel') {
+                document.getElementById('painelScreen').classList.add('active');
+            }
+            
+            atualizarVisibilidadeBotaoDono();
+        }
+        
+        // ==================== BANCO DE DADOS ====================
+        let usuarios = [];
+        let usuarioAtual = null;
+        let planoSelecionado = '';
+        let valorSelecionado = 0;
+        let diasSelecionados = 0;
+        
+        function carregarUsuarios() {
+            const dados = localStorage.getItem('painel_usuarios');
+            if (dados) {
+                usuarios = JSON.parse(dados);
+            }
+        }
+        
+        function salvarUsuarios() {
+            localStorage.setItem('painel_usuarios', JSON.stringify(usuarios));
+        }
+        
+        // ==================== FUNÇÕES DO DONO ====================
+        function mostrarLoginDono() {
+            mostrarTela('login');
+        }
+        
+        function fazerLoginDono() {
+            const user = document.getElementById('loginUser').value;
+            const senha = document.getElementById('loginSenha').value;
+            
+            if (user === DONO.usuario && senha === DONO.senha) {
+                localStorage.setItem('usuario_logado', 'dono');
+                atualizarVisibilidadeBotaoDono();
+                mostrarTela('admin');
+                atualizarPainelAdmin();
+                mostrarToast('✅ Bem-vindo DONO!');
+            } else {
+                mostrarToast('❌ Acesso negado');
+            }
+        }
+        
+        function atualizarPainelAdmin() {
+            document.getElementById('totalUsuarios').innerText = usuarios.length;
+            
+            const hoje = new Date().toLocaleDateString();
+            const usuariosHoje = usuarios.filter(u => {
+                const dataPagamento = new Date(u.dataPagamento).toLocaleDateString();
+                return dataPagamento === hoje;
+            });
+            
+            document.getElementById('usuariosHoje').innerText = usuariosHoje.length;
+            
+            const receitaHoje = usuariosHoje.reduce((acc, u) => acc + u.valor, 0);
+            document.getElementById('receitaHoje').innerText = 'R$ ' + receitaHoje;
+            
+            const tbody = document.getElementById('listaUsuariosBody');
+            tbody.innerHTML = '';
+            
+            usuarios.sort((a, b) => new Date(b.dataPagamento) - new Date(a.dataPagamento));
+            
+            usuarios.forEach(u => {
+                const expiracao = new Date(u.expiracao);
+                const hoje = new Date();
+                const diasRestantes = Math.ceil((expiracao - hoje) / (1000 * 60 * 60 * 24));
+                
+                const status = diasRestantes > 0 ? 
+                    '<span class="pago-badge">✅ ATIVO</span>' : 
+                    '<span class="expirado-badge">❌ EXPIRADO</span>';
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${u.nome}</td>
+                    <td>${u.plano}</td>
+                    <td>${new Date(u.dataPagamento).toLocaleDateString()}</td>
+                    <td>${diasRestantes} dias</td>
+                    <td>${status}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function sairAdmin() {
+            localStorage.removeItem('usuario_logado');
+            atualizarVisibilidadeBotaoDono();
+            mostrarTela('planos');
+        }
+        
+        // ==================== FUNÇÕES DOS PLANOS ====================
+        function selecionarPlano(plano, valor, dias) {
+            planoSelecionado = plano;
+            valorSelecionado = valor;
+            diasSelecionados = dias;
+            
+            document.getElementById('planoEscolhido').innerText = 'Plano ' + plano;
+            document.getElementById('valorEscolhido').innerText = 'R$ ' + valor;
+            
+            const codigoPix = gerarCodigoPix(DONO.pix, valor);
+            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(codigoPix);
+            document.getElementById('qrCodeImg').src = qrUrl;
+            
+            mostrarTela('pagamento');
+        }
+        
+        function gerarCodigoPix(chave, valor) {
+            const valorFormatado = parseFloat(valor).toFixed(2).replace('.', '');
+            return '00020126' + 
+                   '23' + 
+                   '0014BR.GOV.BCB.PIX' + 
+                   '01' + (chave.length.toString().padStart(2, '0')) + chave + 
+                   '52040000' + 
+                   '5303986' + 
+                   '54' + valorFormatado.length.toString().padStart(2, '0') + valorFormatado + 
+                   '5802BR' + 
+                   '5913SETPIX7' + 
+                   '6008BRASILIA' + 
+                   '62070503***' + 
+                   '6304F2B9';
+        }
+        
+        function copiarChavePix() {
+            navigator.clipboard.writeText(DONO.pix);
+            mostrarToast('✅ Chave PIX copiada: ' + DONO.pix);
+        }
+        
+        function voltarParaPlanos() {
+            mostrarTela('planos');
+        }
+        
+        function voltarParaPagamento() {
+            mostrarTela('pagamento');
+        }
+        
+        function verificarPagamentoAntesCadastro() {
+            const confirmacao = confirm(`💰 CONFIRMAR PAGAMENTO?\n\nO cliente pagou R$ ${valorSelecionado} do plano ${planoSelecionado}?\n\nClique OK se o PIX já caiu na sua conta.`);
+            
+            if (confirmacao) {
+                mostrarTela('cadastro');
+                mostrarToast('✅ Pagamento confirmado! Complete o cadastro.');
+            } else {
+                mostrarToast('❌ Pagamento não confirmado. Aguarde o PIX cair.');
+            }
+        }
+        
+        // ==================== FUNÇÕES DE CADASTRO ====================
+        function finalizarCadastro() {
+            const nome = document.getElementById('cadNome').value;
+            const email = document.getElementById('cadEmail').value;
+            const senha = document.getElementById('cadSenha').value;
+            
+            if (!nome || !email || !senha) {
+                mostrarToast('❌ Preencha todos os campos');
+                return;
+            }
+            
+            if (usuarios.find(u => u.email === email)) {
+                mostrarToast('❌ E-mail já cadastrado');
+                return;
+            }
+            
+            const expiracao = new Date();
+            expiracao.setDate(expiracao.getDate() + diasSelecionados);
+            
+            const novoUsuario = {
+                id: usuarios.length + 1,
+                nome: nome,
+                email: email,
+                senha: senha,
+                plano: planoSelecionado,
+                valor: valorSelecionado,
+                dataPagamento: new Date().toISOString(),
+                expiracao: expiracao.toISOString()
+            };
+            
+            usuarios.push(novoUsuario);
+            salvarUsuarios();
+            usuarioAtual = novoUsuario;
+            
+            mostrarTela('painel');
+            atualizarPainelUsuario();
+            mostrarToast('✅ Cadastro realizado! Acesso liberado.');
+        }
+        
+        function atualizarPainelUsuario() {
+            if (!usuarioAtual) return;
+            
+            document.getElementById('nomeUsuario').innerText = usuarioAtual.nome.split(' ')[0];
+            document.getElementById('planoUsuario').innerText = 'Plano ' + usuarioAtual.plano;
+            
+            const expiracao = new Date(usuarioAtual.expiracao);
+            const hoje = new Date();
+            const dias = Math.ceil((expiracao - hoje) / (1000 * 60 * 60 * 24));
+            document.getElementById('diasRestantes').innerText = dias + ' dias restantes';
+        }
+        
+        // ==================== GERADOR PARA USUÁRIO ====================
+        function gerarPixCliente() {
+            const chave = document.getElementById('chaveCliente').value;
+            const valor = document.getElementById('valorPix').value;
+            
+            if (!chave || !valor) {
+                mostrarToast('❌ Preencha todos os campos');
+                return;
+            }
+            
+            const codigo = gerarCodigoPix(chave, valor);
+            
+            document.getElementById('resultadoPix').style.display = 'block';
+            document.getElementById('resultadoPix').innerHTML = `
+                <strong>📋 CÓDIGO PIX:</strong><br>
+                <div style="background:#111; padding:15px; border-radius:10px; word-break:break-all; margin:10px 0; color:#ff0000;">
+                    ${codigo}
+                </div>
+                <strong>💰 Valor:</strong> R$ ${valor}<br>
+                <strong>🔑 Chave:</strong> ${chave}<br><br>
+                <button class="btn-gerar" style="background:#ff0000;" onclick="copiarTexto('${codigo}')">📋 COPIAR</button>
+                <button class="btn-gerar" style="background:#25D366; margin-top:10px;" onclick="enviarWhatsApp('${codigo}')">📲 WHATSAPP</button>
+            `;
+        }
+        
+        function copiarTexto(texto) {
+            navigator.clipboard.writeText(texto);
+            mostrarToast('✅ Código copiado!');
+        }
+        
+        function enviarWhatsApp(codigo) {
+            const valor = document.getElementById('valorPix').value;
+            const chave = document.getElementById('chaveCliente').value;
+            const mensagem = `🏦 *PAGAMENTO*\n\n💰 *Valor:* R$ ${valor}\n🔑 *Chave:* ${chave}\n\n📋 *Código PIX:*\n\`${codigo}\``;
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
+        }
+        
+        function mostrarToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            toast.innerText = msg;
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+        
+        window.onload = function() {
+            carregarUsuarios();
+            atualizarVisibilidadeBotaoDono();
+            mostrarTela('planos');
+        };
+    </script>
+</body>
+</html>
