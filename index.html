@@ -27,7 +27,17 @@
             position: relative;
         }
 
-        /* BOTÃO DONO - SUPER VISÍVEL (SÓ PARA VOCÊ) */
+        .area-clique-dono {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 80px;
+            z-index: 9999;
+            cursor: pointer;
+            background: transparent;
+        }
+
         .login-dono {
             position: fixed;
             top: 20px;
@@ -64,18 +74,6 @@
             transform: scale(1.1);
             background: linear-gradient(135deg, #ff4400, #cc0000);
             box-shadow: 0 0 50px rgba(255, 0, 0, 1);
-        }
-
-        /* Área invisível para clique (mesmo sem botão) */
-        .area-clique-dono {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 150px;
-            height: 80px;
-            z-index: 9999;
-            cursor: pointer;
-            background: transparent;
         }
 
         .planos-screen {
@@ -584,16 +582,13 @@
     </style>
 </head>
 <body>
-    <!-- ÁREA DE CLIQUE INVISÍVEL (para você acessar o login) -->
     <div class="area-clique-dono" onclick="mostrarLoginDono()"></div>
     
-    <!-- BOTÃO DONO - SUPER VISÍVEL (SÓ APARECE DEPOIS DO LOGIN) -->
     <button class="login-dono" id="btnDono" onclick="mostrarLoginDono()">
         👑 DONO MASTER 👑
     </button>
     
     <div class="container">
-        <!-- TELA DE PLANOS -->
         <div id="planosScreen" class="planos-screen">
             <h1>🔥 SETPIX7</h1>
             <div class="subtitle">Escolha seu plano de acesso</div>
@@ -644,7 +639,6 @@
             </div>
         </div>
         
-        <!-- TELA DE LOGIN DO DONO -->
         <div id="loginScreen" class="login-screen">
             <div class="login-title">👑 ACESSO DONO</div>
             
@@ -660,7 +654,6 @@
             <button class="btn-voltar" onclick="voltarParaPlanos()">VOLTAR</button>
         </div>
         
-        <!-- PAINEL ADMIN (DONO) -->
         <div id="adminScreen" class="admin-screen">
             <div class="admin-header">
                 <h2>👑 Painel do Dono - SETPIX7</h2>
@@ -697,9 +690,14 @@
                     <tbody id="listaUsuariosBody"></tbody>
                 </table>
             </div>
+            
+            <!-- ÁREA SECRETA DE CONFIRMAÇÃO (SÓ APARECE QUANDO TEM PAGAMENTO PENDENTE) -->
+            <div id="areaConfirmacaoPagamento" style="display: none; margin-top: 30px; background: #220000; border: 2px solid #ff0000; border-radius: 20px; padding: 25px;">
+                <h3 style="color:#ff0000; margin-bottom:15px;">⏳ PAGAMENTOS PENDENTES</h3>
+                <div id="listaPagamentosPendentes"></div>
+            </div>
         </div>
         
-        <!-- TELA DE PAGAMENTO -->
         <div id="pagamentoScreen" class="pagamento-screen">
             <button class="voltar-btn" onclick="voltarParaPlanos()">← VOLTAR</button>
             
@@ -731,12 +729,15 @@
                 </div>
             </div>
             
-            <button class="btn-comprar" style="background:#ff0000; color:#000000; border:none;" onclick="verificarPagamentoAntesCadastro()">
-                ✅ JÁ PAGUEI • VERIFICAR
+            <button class="btn-comprar" style="background:#ff0000; color:#000000; border:none;" onclick="solicitarConfirmacaoPagamento()">
+                ✅ JÁ PAGUEI • SOLICITAR ACESSO
             </button>
+            
+            <div id="mensagemAguardando" style="display:none; background:#333333; color:#ffaa00; padding:15px; border-radius:10px; margin-top:20px; text-align:center;">
+                ⏳ Seu pedido foi enviado para o dono! Aguarde a confirmação (pode levar alguns minutos).
+            </div>
         </div>
         
-        <!-- TELA DE CADASTRO -->
         <div id="cadastroScreen" class="pagamento-screen" style="display:none;">
             <button class="voltar-btn" onclick="voltarParaPagamento()">← VOLTAR</button>
             
@@ -757,7 +758,6 @@
             <button class="btn-login" onclick="finalizarCadastro()">CRIAR ACESSO</button>
         </div>
         
-        <!-- PAINEL DO USUÁRIO -->
         <div id="painelScreen" class="painel-screen">
             <div class="painel-header">
                 <div class="boas-vindas">
@@ -844,16 +844,26 @@
         let planoSelecionado = '';
         let valorSelecionado = 0;
         let diasSelecionados = 0;
+        let pagamentosPendentes = [];
         
         function carregarUsuarios() {
             const dados = localStorage.getItem('painel_usuarios');
             if (dados) {
                 usuarios = JSON.parse(dados);
             }
+            
+            const pendentes = localStorage.getItem('pagamentos_pendentes');
+            if (pendentes) {
+                pagamentosPendentes = JSON.parse(pendentes);
+            }
         }
         
         function salvarUsuarios() {
             localStorage.setItem('painel_usuarios', JSON.stringify(usuarios));
+        }
+        
+        function salvarPagamentosPendentes() {
+            localStorage.setItem('pagamentos_pendentes', JSON.stringify(pagamentosPendentes));
         }
         
         // ==================== FUNÇÕES DO DONO ====================
@@ -914,6 +924,37 @@
                 `;
                 tbody.appendChild(tr);
             });
+            
+            // Mostrar pagamentos pendentes (SÓ PARA O DONO)
+            const areaPendentes = document.getElementById('areaConfirmacaoPagamento');
+            const listaPendentes = document.getElementById('listaPagamentosPendentes');
+            
+            if (pagamentosPendentes.length > 0) {
+                areaPendentes.style.display = 'block';
+                listaPendentes.innerHTML = '';
+                
+                pagamentosPendentes.forEach((p, index) => {
+                    const div = document.createElement('div');
+                    div.style.background = '#1a1a1a';
+                    div.style.border = '1px solid #ff0000';
+                    div.style.borderRadius = '10px';
+                    div.style.padding = '15px';
+                    div.style.marginBottom = '10px';
+                    
+                    div.innerHTML = `
+                        <p><strong>💰 Valor:</strong> R$ ${p.valor}</p>
+                        <p><strong>📅 Plano:</strong> ${p.plano}</p>
+                        <p><strong>⏰ Solicitado:</strong> ${new Date(p.data).toLocaleString()}</p>
+                        <div style="display:flex; gap:10px; margin-top:10px;">
+                            <button class="btn-login" style="background:#00aa00; color:white; padding:8px; margin:0;" onclick="confirmarPagamento(${index})">✅ CONFIRMAR PAGAMENTO</button>
+                            <button class="btn-voltar" style="padding:8px; margin:0;" onclick="recusarPagamento(${index})">❌ RECUSAR</button>
+                        </div>
+                    `;
+                    listaPendentes.appendChild(div);
+                });
+            } else {
+                areaPendentes.style.display = 'none';
+            }
         }
         
         function sairAdmin() {
@@ -967,15 +1008,54 @@
             mostrarTela('pagamento');
         }
         
-        function verificarPagamentoAntesCadastro() {
-            const confirmacao = confirm(`💰 CONFIRMAR PAGAMENTO?\n\nO cliente pagou R$ ${valorSelecionado} do plano ${planoSelecionado}?\n\nClique OK se o PIX já caiu na sua conta.`);
+        // ==================== SOLICITAÇÃO DE PAGAMENTO (CLIENTE) ====================
+        function solicitarConfirmacaoPagamento() {
+            // Cliente solicita confirmação
+            document.getElementById('mensagemAguardando').style.display = 'block';
             
-            if (confirmacao) {
-                mostrarTela('cadastro');
-                mostrarToast('✅ Pagamento confirmado! Complete o cadastro.');
-            } else {
-                mostrarToast('❌ Pagamento não confirmado. Aguarde o PIX cair.');
+            // Adiciona à lista de pendentes (só o dono vê)
+            const solicitacao = {
+                valor: valorSelecionado,
+                plano: planoSelecionado,
+                data: new Date().toISOString()
+            };
+            
+            pagamentosPendentes.push(solicitacao);
+            salvarPagamentosPendentes();
+            
+            mostrarToast('✅ Solicitação enviada! Aguarde confirmação do dono.');
+        }
+        
+        // ==================== CONFIRMAÇÃO DE PAGAMENTO (SÓ DONO) ====================
+        function confirmarPagamento(index) {
+            // SÓ EXECUTA SE FOR DONO
+            if (localStorage.getItem('usuario_logado') !== 'dono') {
+                mostrarToast('❌ Acesso negado');
+                return;
             }
+            
+            // Remove da lista de pendentes
+            pagamentosPendentes.splice(index, 1);
+            salvarPagamentosPendentes();
+            
+            // Libera cadastro para o cliente (mas isso é manual, você vai avisar ele)
+            mostrarToast('✅ Pagamento confirmado! Avise o cliente para criar conta.');
+            
+            // Atualiza painel admin
+            atualizarPainelAdmin();
+        }
+        
+        function recusarPagamento(index) {
+            if (localStorage.getItem('usuario_logado') !== 'dono') {
+                mostrarToast('❌ Acesso negado');
+                return;
+            }
+            
+            pagamentosPendentes.splice(index, 1);
+            salvarPagamentosPendentes();
+            
+            mostrarToast('❌ Pagamento recusado');
+            atualizarPainelAdmin();
         }
         
         // ==================== FUNÇÕES DE CADASTRO ====================
@@ -993,6 +1073,9 @@
                 mostrarToast('❌ E-mail já cadastrado');
                 return;
             }
+            
+            // Verifica se tem pagamento confirmado (simulação - na vida real, você libera manualmente)
+            // Aqui você pode colocar uma lógica de verificação, mas por enquanto, só cadastra se tiver sido confirmado manualmente
             
             const expiracao = new Date();
             expiracao.setDate(expiracao.getDate() + diasSelecionados);
